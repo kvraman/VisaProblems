@@ -19,6 +19,8 @@ public class BTNode<T> {
 		this.value = value;
 	}
 
+	// Getters and setters explivitly defined
+	// Not using lombok
 	public BTNode<T> getLeft() {
 		return left;
 	}
@@ -43,14 +45,25 @@ public class BTNode<T> {
 		this.value = value;
 	}
 
-	public int height() {
-		return Math.max(left != null ? left.height() : 0, right != null ? right.height() : 0) + 1;
+	/**
+	 * @return the height of the tree
+	 */
+	public int computeHeight() {
+		return Math.max(left != null ? left.computeHeight() : 0, right != null ? right.computeHeight() : 0) + 1;
 	}
 
-	public void print() {
-		this.print(this, this.height(), 0);
-	}
-
+	/**
+	 * @param node
+	 *            node to print
+	 * @param height
+	 *            height of the entire tree
+	 * @param level
+	 *            level this node is at
+	 * @param nthNodeAtLevel
+	 *            the nth node at this level
+	 * @param queue
+	 *            queue to output the data to. Used for level order printing types
+	 */
 	private void printNode(BTNode<T> node, int height, int level, int nthNodeAtLevel, LinkedList<BTNode<T>> queue) {
 		int gap = (int) Math.pow(2, height - level);
 		int offset = (int) Math.pow(2, (height - level - 1)) - 1;
@@ -66,9 +79,19 @@ public class BTNode<T> {
 		}
 	}
 
-	private void print(BTNode<T> node, int height, int level) {
+	/**
+	 * @param node
+	 *            node to print. Typically the root node
+	 * @param height
+	 *            height of the tree
+	 * @param level
+	 *            level to print from
+	 */
+	public void print() {
 		LinkedList<BTNode<T>> queue = new LinkedList<BTNode<T>>();
-		queue.push(node);
+		queue.push(this);
+		int level = 0;
+		int height = this.computeHeight();
 		int nNodesAtLevel = (int) Math.pow(2, level);
 		int nthNodeAtLevel = 0;
 		while (!queue.isEmpty()) {
@@ -87,23 +110,50 @@ public class BTNode<T> {
 		}
 	}
 
+	/**
+	 * @param file
+	 *            output file to which we serialize the binary tree
+	 * @throws IOException
+	 */
 	public void serialize(File file) throws IOException {
 		Writer writer = new FileWriter(file);
 		this.serialize(writer, this);
 		writer.close();
 	}
 
+	/**
+	 * For serialization I am using pre order traversal.
+	 * 
+	 * @param writer
+	 *            based of the file we need to write to
+	 * @param node
+	 *            node to be written
+	 * @throws IOException
+	 */
 	private void serialize(Writer writer, BTNode<T> node) throws IOException {
+		// For leaf nodes, write null to the file
 		if (node == null) {
 			writer.write("null ");
 			return;
 		}
+		// print the value with a space at the end to separate them
 		writer.write(node.getValue().toString() + " ");
+
+		// serialize left and right nodes
 		this.serialize(writer, node.getLeft());
 		this.serialize(writer, node.getRight());
 	}
 
+	/**
+	 * For deserialization, I need to assume that the tree is an int tree
+	 * 
+	 * @param file
+	 *            - to deserialize
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public static BTNode<Integer> deserializeIntTree(File file) throws FileNotFoundException {
+		// Use a scanner to scane the file
 		Scanner scanner = new Scanner(file);
 		if (scanner.hasNext()) {
 			return deserializeIntTree(scanner);
@@ -112,6 +162,13 @@ public class BTNode<T> {
 		return null;
 	}
 
+	/**
+	 * When deserializing, if a null is found, then we will assume that node is
+	 * null. If it is not null, we will parse it as an integer
+	 * 
+	 * @param scanner
+	 * @return
+	 */
 	private static BTNode<Integer> deserializeIntTree(Scanner scanner) {
 		String text = scanner.next();
 		Integer value = text.equalsIgnoreCase("null") ? null : Integer.parseInt(text);

@@ -40,6 +40,8 @@ public class MeetingPoint {
 		int left = 0, right = 0;
 		int totalIterations = 0;
 
+		System.out.println("================ O(M+N) Solution ========================");
+
 		for (int i = 0; i < houses.length; i++) {
 			int vecDistance = houses[i] - restaurants[0];
 			if (vecDistance < 0)
@@ -52,8 +54,8 @@ public class MeetingPoint {
 
 		int minDistance = distance;
 		int closestRestaurant = 0;
-		System.out.println(distance);
-		System.out.println("Left: " + left + "  " + " Right: " + right);
+		System.out.println("Total Distance to Restaurant Number 1 is " + distance);
+		System.out.println("Houses to the Left: " + left + "  " + " Right: " + right + " of restaurant 1");
 
 		// Now, get the next restaurant and the distance between the two restaurants
 		// That should be positive
@@ -91,12 +93,13 @@ public class MeetingPoint {
 				minDistance = distance;
 				closestRestaurant = j;
 			}
-			System.out.println(distance);
-			System.out.println("Left: " + left + "  " + " Right: " + right);
+			System.out.println("Total Distance to Restaurant Number " + (j + 1) + " is " + distance);
+			System.out.println("Houses to the Left: " + left + "  " + " Right: " + right + " of restaurant " + (j + 1));
 		}
 
 		System.out.println("Closest Restaurant is " + closestRestaurant + " at distance " + minDistance);
 		System.out.println("Total Iterations " + totalIterations);
+		System.out.println("===========================================");
 	}
 
 	/**
@@ -106,6 +109,7 @@ public class MeetingPoint {
 	 */
 	private static void computeMinDistanceUsingBruteForceMethod(int[] restaurants, int[] houses) {
 		// Brute force
+		System.out.println("================ BRUTE FORCE O (M * N) solution ========================");
 		int minDistance = Integer.MAX_VALUE;
 		int closestRestaurant = -1;
 		int totalIterations = 0;
@@ -115,7 +119,7 @@ public class MeetingPoint {
 				distance += Math.abs(houses[j] - restaurants[i]);
 				totalIterations++;
 			}
-			System.out.println(distance);
+			System.out.println("Total Distance to Restaurant Number " + (i + 1) + " is " + distance);
 
 			if (distance < minDistance) {
 				minDistance = distance;
@@ -123,8 +127,9 @@ public class MeetingPoint {
 			}
 		}
 
-		System.out.println("Closest Restaurant is " + closestRestaurant + " at distance " + minDistance);
-		System.out.println("Total Iterations " + totalIterations);
+		System.out.println("Closest Restaurant is " + (closestRestaurant + 1) + " at total distance =  " + minDistance);
+		System.out.println("Total No Of Iterations " + totalIterations);
+		System.out.println("================================================");
 	}
 
 }
